@@ -68,7 +68,7 @@ while ($row = $filterQuery->fetch_assoc()) {
 }
 $stmtFilter->close();
 
-/* validasi filter: harus termasuk matkul yang di-enroll mahasiswa */
+/* validasi filter */
 if ($filter_matkul > 0) {
     $stmtValidasi = $conn->prepare("
         SELECT 1
@@ -87,23 +87,30 @@ if ($filter_matkul > 0) {
     $stmtValidasi->close();
 }
 
-/* scoreboard */
+/* scoreboard versi baru */
 $scoreRows = [];
 if ($filter_matkul > 0) {
     $stmtBoard = $conn->prepare("
         SELECT 
-            hk.nim,
+            a.nim,
             a.nama,
             mk.nama_matkul,
             mk.kelas,
-            ROUND(AVG(hk.nilai), 2) AS rata_nilai,
-            COUNT(hk.id) AS jumlah_kuis
-        FROM hasil_kuis hk
-        JOIN kuis k ON hk.kuis_id = k.id
-        JOIN mata_kuliah mk ON k.matkul_id = mk.id
-        JOIN akun a ON hk.nim = a.nim
-        WHERE k.matkul_id = ? AND hk.status = 'selesai'
-        GROUP BY hk.nim, a.nama, mk.nama_matkul, mk.kelas
+            COUNT(DISTINCT k.id) AS total_kuis_matkul,
+            COUNT(DISTINCT hk.id) AS jumlah_kuis,
+            COALESCE(SUM(hk.nilai), 0) AS total_nilai,
+            ROUND(
+                COALESCE(SUM(hk.nilai), 0) / NULLIF(COUNT(DISTINCT k.id), 0),
+                2
+            ) AS rata_nilai
+        FROM mahasiswa_matkul mm
+        JOIN akun a ON mm.nim = a.nim
+        JOIN mata_kuliah mk ON mm.matkul_id = mk.id
+        LEFT JOIN kuis k ON k.matkul_id = mk.id
+        LEFT JOIN hasil_kuis hk ON hk.kuis_id = k.id AND hk.nim = mm.nim
+        WHERE mm.matkul_id = ?
+        GROUP BY a.nim, a.nama, mk.nama_matkul, mk.kelas
+        HAVING COUNT(DISTINCT k.id) > 0
         ORDER BY rata_nilai DESC, jumlah_kuis DESC, a.nama ASC
     ");
     $stmtBoard->bind_param("i", $filter_matkul);
@@ -113,6 +120,7 @@ if ($filter_matkul > 0) {
     while ($row = $scoreQuery->fetch_assoc()) {
         $scoreRows[] = $row;
     }
+
     $stmtBoard->close();
 }
 
