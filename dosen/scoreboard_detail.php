@@ -36,7 +36,11 @@ $stmtRanking = $conn->prepare("
     LEFT JOIN hasil_kuis hk ON hk.kuis_id = k.id AND hk.nim = mm.nim
     WHERE mm.matkul_id = ?
     GROUP BY a.nim, a.nama, a.email
-    ORDER BY CASE WHEN AVG(hk.nilai) IS NULL THEN 1 ELSE 0 END ASC, AVG(hk.nilai) DESC, COUNT(hk.id) DESC, a.nama ASC
+    ORDER BY 
+        CASE WHEN COUNT(hk.id) = 0 THEN 1 ELSE 0 END ASC,
+        COUNT(hk.id) DESC,
+        AVG(hk.nilai) DESC,
+        a.nama ASC
 ");
 if (!$stmtRanking) { die("Query ranking gagal."); }
 $stmtRanking->bind_param("i", $matkul_id);
