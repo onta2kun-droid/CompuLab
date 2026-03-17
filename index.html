@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COMPULAB</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- Cegah flash saat pindah halaman -->
+<script>
+  const t = localStorage.getItem('compulab_theme');
+  if (t) document.documentElement.setAttribute('data-theme', t);
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/role.css">
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-layer">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Leaf decorations -->
+<svg class="leaf-deco leaf-1" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M100 10 C60 10, 10 50, 10 100 C10 150, 60 190, 100 190 C140 190, 190 150, 190 100 C190 50, 140 10, 100 10Z M100 10 C100 10, 100 100, 100 190" stroke="#2d6a4f" stroke-width="3" fill="#2d6a4f"/>
+</svg>
+<svg class="leaf-deco leaf-2" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M100 10 C60 10, 10 50, 10 100 C10 150, 60 190, 100 190 C140 190, 190 150, 190 100 C190 50, 140 10, 100 10Z M100 10 C100 10, 100 100, 100 190" stroke="#2d6a4f" stroke-width="3" fill="#2d6a4f"/>
+</svg>
+<svg class="leaf-deco leaf-3" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M100 10 C60 10, 10 50, 10 100 C10 150, 60 190, 100 190 C140 190, 190 150, 190 100 C190 50, 140 10, 100 10Z" stroke="#2d6a4f" stroke-width="3" fill="#2d6a4f"/>
+</svg>
+
+<!-- Navbar -->
+<nav>
+  <div class="nav-logo">COMPULAB</div>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Beranda</a></li>
+    <li><a href="tentang.html">Tentang</a></li>
+    <li><a href="https://wa.me/6282255304228">Kontak</a></li>
+    <li>
+      <button class="dark-toggle" id="darkToggle" title="Toggle Dark Mode">🌙</button>
+    </li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-tag">
+    <span></span> Platform Pembelajaran Digital
+  </div>
+
+  <h1 class="hero-title">COMPU<em>LAB</em></h1>
+  <p class="hero-subtitle">Smart Learning. Smart Competition. — Platform terpadu untuk dosen, mahasiswa, dan pengelola sistem.</p>
+
+  <div class="card-container">
+
+    <a href="login/mahasiswa.php" class="role-card mahasiswa">
+      <div class="card-stripe"></div>
+      <span class="card-icon">🎓</span>
+      <div class="card-title">Mahasiswa</div>
+      <div class="card-desc">Akses materi & kuis</div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="login/dosen.php" class="role-card dosen">
+      <div class="card-stripe"></div>
+      <span class="card-icon">👨‍🏫</span>
+      <div class="card-title">Dosen</div>
+      <div class="card-desc">Kelola materi & kuis</div>
+      <div class="card-arrow">→</div>
+    </a>
+
+    <a href="login/admin.php" class="role-card admin">
+      <div class="card-stripe"></div>
+      <span class="card-icon">👑</span>
+      <div class="card-title">Admin</div>
+      <div class="card-desc">Kontrol sistem</div>
+      <div class="card-arrow">→</div>
+    </a>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">COMPULAB</div>
+  <p>© 2026 COMPULAB · Smart Learning. Smart Competition.</p>
+</footer>
+
+<script src="js/darkmode.js"></script>
+
+</body>
+</html>

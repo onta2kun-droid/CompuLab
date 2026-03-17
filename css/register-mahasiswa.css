@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  background: var(--bg);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 24px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  width: 500px; height: 500px;
+  background: var(--green-light);
+  filter: blur(120px);
+  opacity: 0.15;
+  border-radius: 50%;
+  top: -150px; left: -100px;
+  animation: float 10s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  width: 400px; height: 400px;
+  background: var(--green-fresh);
+  filter: blur(100px);
+  opacity: 0.12;
+  border-radius: 50%;
+  bottom: -100px; right: -80px;
+  animation: float 14s ease-in-out infinite reverse;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.login-container {
+  z-index: 2;
+  width: 100%;
+  max-width: 480px;
+  animation: fadeUp 0.7s ease both;
+}
+
+.login-card {
+  background: var(--bg-card);
+  border-radius: 32px;
+  padding: 48px 44px;
+  box-shadow: 0 20px 60px var(--shadow);
+  border-top: 5px solid var(--green-light);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 100px;
+  background: linear-gradient(180deg, rgba(116,198,157,0.06), transparent);
+  pointer-events: none;
+}
+
+.login-card h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.login-card > p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+/* ── INPUT & SELECT — sama stylenya ── */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 14px 18px;
+  margin-bottom: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg-input);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text-primary);
+  outline: none;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input::placeholder,
+select:invalid { color: var(--text-muted); }
+
+input:focus,
+select:focus {
+  border-color: var(--border-focus);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 4px rgba(116, 198, 157, 0.12);
+}
+
+/* Arrow untuk select */
+select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' stroke='%2340916c' stroke-width='1.5' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 44px;
+}
+
+select option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+/* ── ERROR & SUCCESS ── */
+.error-message {
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  color: var(--error-text);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  text-align: left;
+  font-weight: 500;
+}
+
+.success-message {
+  background: rgba(64, 145, 108, 0.08);
+  border: 1px solid rgba(64, 145, 108, 0.25);
+  color: var(--green-fresh);
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  margin-top: 12px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* ── BUTTON ── */
+button[type="submit"] {
+  width: 100%;
+  padding: 15px;
+  margin-top: 6px;
+  border: none;
+  border-radius: 16px;
+  background: var(--btn-gradient);
+  color: #ffffff;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px var(--btn-shadow);
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px var(--btn-shadow-h);
+  opacity: 0.95;
+}
+
+button[type="submit"]:active { transform: translateY(0); }
+
+/* ── LOGIN LINK ── */
+.login-link { margin-top: 24px; }
+.login-link p { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+.login-link a { font-size: 14px; font-weight: 600; color: var(--green-fresh); text-decoration: none; }
+.login-link a:hover { color: var(--green-mid); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-25px); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 520px) {
+  .login-card { padding: 36px 24px; }
+  body { padding: 24px 16px; }
+}

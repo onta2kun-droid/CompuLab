@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tentang - COMPULAB</title>
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script>
+const t = localStorage.getItem('compulab_theme');
+if (t) document.documentElement.setAttribute('data-theme', t);
+</script>
+
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/role.css">
+
+<style>
+.dev-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  margin-top: 50px;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 20px;
+}
+
+.dev-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 420px;
+  margin: auto;
+  text-align: center;
+  box-shadow: 0 10px 30px var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.dev-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 40px var(--shadow-hover);
+}
+
+.dev-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 18px;
+  border: 4px solid var(--green-pale);
+}
+
+[data-theme="dark"] .dev-photo {
+  border-color: rgba(116,198,157,0.25);
+}
+
+.dev-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dev-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.dev-role {
+  font-size: 13px;
+  color: var(--green-fresh);
+  margin-bottom: 14px;
+}
+
+.dev-desc {
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: justify;
+  color: var(--text-mid);
+}
+
+@media (max-width: 900px) {
+  .dev-container { grid-template-columns: 1fr; max-width: 500px; }
+}
+
+@media (max-width: 600px) {
+  .dev-container { gap: 24px; max-width: 320px; }
+  .dev-card { padding: 22px; }
+  .dev-photo { width: 100px; height: 100px; }
+  .dev-name { font-size: 18px; }
+  .dev-desc { font-size: 13px; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-layer">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Leaf decorations -->
+<svg class="leaf-deco leaf-1" viewBox="0 0 200 200" fill="none">
+  <path d="M100 10 C60 10, 10 50, 10 100 C10 150, 60 190, 100 190 C140 190, 190 150, 190 100 C190 50, 140 10, 100 10Z M100 10 C100 10, 100 100, 100 190" stroke="#2d6a4f" stroke-width="3" fill="#2d6a4f"/>
+</svg>
+
+<svg class="leaf-deco leaf-2" viewBox="0 0 200 200" fill="none">
+  <path d="M100 10 C60 10, 10 50, 10 100 C10 150, 60 190, 100 190 C140 190, 190 150, 190 100 C190 50, 140 10, 100 10Z M100 10 C100 10, 100 100, 100 190" stroke="#2d6a4f" stroke-width="3" fill="#2d6a4f"/>
+</svg>
+
+<svg class="leaf-deco leaf-3" viewBox="0 0 200 200" fill="none">
+  <path d="M100 10 C60 10, 10 50, 10 100 C10 150, 60 190, 100 190 C140 190, 190 150, 190 100 C190 50, 140 10, 100 10Z" stroke="#2d6a4f" stroke-width="3" fill="#2d6a4f"/>
+</svg>
+
+<!-- Navbar -->
+<nav>
+  <div class="nav-logo">COMPULAB</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="tentang.html" class="active">Tentang</a></li>
+    <li><a href="https://wa.me/6282255304228">Kontak</a></li>
+    <li>
+      <button class="dark-toggle" id="darkToggle">🌙</button>
+    </li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+
+<div class="hero-tag">
+<span></span> Tentang Developer
+</div>
+
+<h1 class="hero-title">Tim <em>Developer</em></h1>
+
+<p class="hero-subtitle">
+Website COMPULAB dikembangkan oleh mahasiswa Program Studi Pendidikan Komputer 
+Fakultas Keguruan dan Ilmu Pendidikan Universitas Mulawarman sebagai bagian dari 
+inovasi dalam pengembangan media pembelajaran digital yang modern dan interaktif.
+</p>
+
+<div class="dev-container">
+
+<!-- Developer 1 -->
+
+<div class="dev-card">
+
+<div class="dev-photo">
+<img src="assets/richardo.jpeg">
+</div>
+
+<div class="dev-name">
+Richardo Reksi Ratag
+</div>
+
+<div class="dev-role">
+Backend Developer • Mahasiswa Pendidikan Komputer FKIP Universitas Mulawarman
+</div>
+
+<div class="dev-desc">
+Richardo Reksi Ratag adalah mahasiswa Program Studi Pendidikan Komputer 
+Fakultas Keguruan dan Ilmu Pendidikan Universitas Mulawarman. 
+Ia berperan sebagai Backend Developer dalam pengembangan platform COMPULAB, 
+dengan fokus pada pengelolaan sistem, logika aplikasi, serta integrasi 
+database yang mendukung proses pembelajaran digital. 
+
+Melalui pengembangan sistem ini, Richardo berupaya menghadirkan platform 
+pembelajaran yang stabil, terstruktur, dan mampu mendukung aktivitas 
+belajar mengajar secara lebih efektif di lingkungan pendidikan.
+</div>
+
+</div>
+
+<!-- Developer 2 -->
+
+<div class="dev-card">
+
+<div class="dev-photo">
+<img src="assets/bagus.jpg">
+</div>
+
+<div class="dev-name">
+Bagus Arifin
+</div>
+
+<div class="dev-role">
+Frontend Developer • Mahasiswa Pendidikan Komputer FKIP Universitas Mulawarman
+</div>
+
+<div class="dev-desc">
+Bagus Arifin merupakan mahasiswa Program Studi Pendidikan Komputer 
+Fakultas Keguruan dan Ilmu Pendidikan Universitas Mulawarman. 
+Dalam pengembangan COMPULAB, Bagus berperan sebagai Frontend Developer 
+yang bertanggung jawab dalam merancang tampilan antarmuka pengguna 
+agar lebih menarik, responsif, dan mudah digunakan.
+
+Melalui desain antarmuka yang interaktif, Bagus berusaha menghadirkan 
+pengalaman belajar digital yang lebih modern dan nyaman bagi pengguna 
+dalam mengakses materi serta mengikuti kegiatan pembelajaran.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-logo">COMPULAB</div>
+  <p>© 2026 COMPULAB · Smart Learning. Smart Competition.</p>
+</footer>
+
+<script src="js/darkmode.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,655 @@
+/* role.css — responsive clean version */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+body {
+  margin: 0;
+}
+
+/* ── NAVBAR ── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: var(--nav-bg);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--nav-border);
+  animation: slideDown 0.6s ease both;
+}
+
+.nav-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--green-deep);
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .nav-logo {
+  color: var(--green-light);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.nav-links li {
+  list-style: none;
+}
+
+.nav-links a {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-mid);
+  white-space: nowrap;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--green-fresh);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--green-fresh);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.dark-toggle {
+  position: static !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+  border: 1.5px solid var(--border) !important;
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  font-size: 16px !important;
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow) !important;
+}
+
+.dark-toggle:hover {
+  transform: scale(1.08) rotate(12deg) !important;
+  box-shadow: 0 4px 14px var(--shadow-hover) !important;
+}
+
+/* ── BACKGROUND ── */
+.bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.18;
+  animation: float 12s ease-in-out infinite;
+}
+
+[data-theme="dark"] .blob {
+  opacity: 0.08;
+}
+
+.blob-1 {
+  width: 600px;
+  height: 600px;
+  top: -200px;
+  right: -120px;
+  background: var(--green-fresh);
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 400px;
+  height: 400px;
+  left: -120px;
+  bottom: 80px;
+  background: var(--green-light);
+  animation-delay: -4s;
+}
+
+.blob-3 {
+  width: 280px;
+  height: 280px;
+  top: 45%;
+  left: 40%;
+  background: var(--green-mid);
+  animation-delay: -8s;
+}
+
+/* ── DECORATION ── */
+.leaf-deco {
+  position: fixed;
+  z-index: 0;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .leaf-deco {
+  opacity: 0.03;
+}
+
+.leaf-1 {
+  top: 10%;
+  left: 4%;
+  width: 160px;
+  transform: rotate(-20deg);
+}
+
+.leaf-2 {
+  right: 4%;
+  bottom: 14%;
+  width: 190px;
+  transform: rotate(30deg);
+}
+
+.leaf-3 {
+  top: 58%;
+  left: 2%;
+  width: 110px;
+  transform: rotate(10deg);
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  text-align: center;
+  padding: 150px 20px 80px;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 7px 16px;
+  border: 1px solid rgba(64, 145, 108, 0.3);
+  border-radius: 999px;
+  background: rgba(64, 145, 108, 0.12);
+  color: var(--green-fresh);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+[data-theme="dark"] .hero-tag {
+  background: rgba(116, 198, 157, 0.1);
+  border-color: rgba(116, 198, 157, 0.25);
+}
+
+.hero-tag span {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--green-fresh);
+  animation: pulse 2s infinite;
+}
+
+.hero-title {
+  margin: 0 0 18px;
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(42px, 8vw, 96px);
+  line-height: 1;
+  color: var(--text-primary);
+  word-break: break-word;
+  animation: fadeUp 0.8s 0.35s ease both;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--green-fresh);
+}
+
+.hero-subtitle {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto 48px;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--text-mid);
+  animation: fadeUp 0.8s 0.5s ease both;
+}
+
+/* ── CARD CONTAINER ── */
+.card-container {
+  width: 100%;
+  max-width: 1100px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  animation: fadeUp 0.8s 0.65s ease both;
+}
+
+/* ── CARD ── */
+.role-card {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  padding: 36px 26px 54px;
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: var(--bg-card);
+  box-shadow: 0 4px 24px var(--shadow);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.role-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(64, 145, 108, 0.06), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.role-card:hover {
+  transform: translateY(-10px) scale(1.01);
+  border-color: var(--green-light);
+  box-shadow: 0 24px 48px var(--shadow-hover);
+}
+
+.role-card:hover::before {
+  opacity: 1;
+}
+
+.card-stripe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 28px 28px 0 0;
+}
+
+.mahasiswa .card-stripe {
+  background: linear-gradient(90deg, var(--green-light), var(--green-fresh));
+}
+
+.dosen .card-stripe {
+  background: linear-gradient(90deg, var(--green-fresh), var(--green-mid));
+}
+
+.admin .card-stripe {
+  background: linear-gradient(90deg, var(--green-mid), var(--green-deep));
+}
+
+.card-icon {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 40px;
+  transition: transform 0.3s ease;
+}
+
+.role-card:hover .card-icon {
+  transform: scale(1.12) rotate(-5deg);
+}
+
+.card-title {
+  margin-bottom: 8px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--text-primary);
+}
+
+.card-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-mid);
+  opacity: 0.8;
+}
+
+.card-arrow {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid rgba(64, 145, 108, 0.15);
+  border-radius: 10px;
+  background: var(--green-pale);
+  color: var(--green-fresh);
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .card-arrow {
+  border-color: rgba(116, 198, 157, 0.2);
+  background: rgba(64, 145, 108, 0.15);
+  color: var(--green-light);
+}
+
+.role-card:hover .card-arrow {
+  transform: translate(2px, -2px);
+  border-color: var(--green-fresh);
+  background: var(--green-fresh);
+  color: #fff;
+}
+
+.nav-links a.active {
+  color: var(--green-fresh);
+  font-weight: 600;
+}
+
+.nav-links a.active::after {
+  width: 100%;
+}
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 1;
+  padding: 32px 20px;
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  text-align: center;
+  font-size: 13px;
+}
+
+footer .footer-logo {
+  margin-bottom: 8px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  color: #fff;
+}
+
+/* ── ANIMATION ── */
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-30px) scale(1.05);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.4;
+  }
+}
+
+/* ── TABLET ── */
+@media (max-width: 992px) {
+  nav {
+    padding: 16px 24px;
+  }
+
+  .hero {
+    padding: 140px 20px 72px;
+  }
+
+  .hero-subtitle {
+    max-width: 620px;
+    font-size: 16px;
+  }
+
+  .card-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 760px;
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .nav-logo {
+    font-size: 20px;
+  }
+
+  .nav-links {
+    width: 100%;
+    gap: 8px 12px;
+    justify-content: center;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+  }
+
+  .dark-toggle {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    font-size: 15px !important;
+  }
+
+  .hero {
+    min-height: auto;
+    padding: 165px 14px 44px;
+  }
+
+  .hero-tag {
+    margin-bottom: 14px;
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  .hero-title {
+    font-size: clamp(30px, 9vw, 40px);
+    margin-bottom: 12px;
+  }
+
+  .hero-subtitle {
+    max-width: 320px;
+    margin-bottom: 28px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .card-container {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+    gap: 14px;
+  }
+
+  .role-card {
+    padding: 20px 16px 46px;
+    border-radius: 18px;
+  }
+
+  .card-icon {
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .card-arrow {
+    width: 30px;
+    height: 30px;
+    right: 14px;
+    bottom: 14px;
+    font-size: 13px;
+  }
+
+  .card-stripe {
+    height: 3px;
+  }
+
+  footer {
+    padding: 24px 14px;
+  }
+
+  footer .footer-logo {
+    font-size: 17px;
+  }
+
+  footer p {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  nav {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .nav-logo {
+    font-size: 18px;
+  }
+
+  .nav-links {
+    gap: 6px 10px;
+  }
+
+  .nav-links a {
+    font-size: 12px;
+  }
+
+  .hero {
+    padding: 155px 12px 40px;
+  }
+
+  .hero-tag {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
+  .hero-title {
+    font-size: 28px;
+  }
+
+  .hero-subtitle {
+    max-width: 290px;
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+
+  .card-container {
+    max-width: 280px;
+    gap: 12px;
+  }
+
+  .role-card {
+    padding: 18px 14px 42px;
+  }
+
+  .card-icon {
+    font-size: 24px;
+  }
+
+  .card-title {
+    font-size: 17px;
+  }
+
+  .card-desc {
+    font-size: 11px;
+  }
+
+  .card-arrow {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
