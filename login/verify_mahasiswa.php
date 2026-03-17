@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
-include "../idk/forsafety.php";
+require_once __DIR__ . '/../../sambung/forsafety.php';
 
 $email = isset($_GET['email']) ? trim($_GET['email']) : "";
 $codeError = "";

@@ -1,5 +1,5 @@
 <?php
-include "../idk/forsafety.php";
+require_once __DIR__ . '/../../sambung/forsafety.php';
 // require "../vendor/autoload.php";
 
 // use Twilio\Rest\Client;

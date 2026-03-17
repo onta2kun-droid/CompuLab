@@ -1,5 +1,5 @@
 <?php
-require_once '../config.php';
+require_once __DIR__ . '/../../../sambung/compulab.php';
 
 $headers = getallheaders();
 $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';

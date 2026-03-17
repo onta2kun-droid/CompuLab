@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../idk/forsafety.php";
+require_once __DIR__ . '/../../sambung/forsafety.php';
 
 date_default_timezone_set('Asia/Makassar');
 header('Content-Type: application/json');

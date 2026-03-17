@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../idk/forsafety.php";
+require_once __DIR__ . '/../../sambung/forsafety.php';
 
 require_once('../vendor/tecnickcom/tcpdf/tcpdf.php'); // sesuaikan path
 

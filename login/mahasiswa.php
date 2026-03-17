@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../idk/forsafety.php";
+require_once __DIR__ . '/../../sambung/forsafety.php';
 
 $emailError = "";
 $passwordError = "";

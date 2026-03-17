@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "../idk/forsafety.php";
+require_once __DIR__ . '/../../sambung/forsafety.php';
 
 if (!isset($_SESSION['email'])) {
     header("Location: ../login/mahasiswa.php");
