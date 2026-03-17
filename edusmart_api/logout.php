@@ -1,6 +1,6 @@
 <?php
 
-include "config.php";
+require_once __DIR__ . '/../../sambung/edusmart.php';
 
 $token = $_POST['token'];
 
