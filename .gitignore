@@ -1,21 +1,17 @@
-# Library & Dependencies
+
 /vendor/
 
-# Konfigurasi Database (Ganti sesuai nama file asli Anda)
 /bakar/config.php
 /edusmart_api/config.php
 idk
 /idk/forsafety.php
 
-# Tools & Panel
 /panelboss/
 
-# File Backup & Sampah
 *.rar
 *.zip
 CompuLab-main.rar
 
-# Folder Uploads (Opsional, jika isinya gambar user)
 /uploads/
 
 panelboss
