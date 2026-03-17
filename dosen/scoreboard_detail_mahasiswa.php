@@ -443,6 +443,12 @@ date_default_timezone_set('Asia/Makassar');
     </div>
   </div>
 
+    <a href="export_pdf_mahasiswa.php?matkul_id=<?php echo $matkul_id; ?>&nim=<?php echo urlencode($mahasiswa['nim']); ?>"
+    class="btn-gold"
+    style="font-size:13px; padding:10px 16px; margin-bottom:16px; display:inline-block;">
+    ⬇️ Download PDF
+    </a>
+
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-card-lbl">Total Kuis</div>
