@@ -69,7 +69,7 @@ if ($filter_matkul > 0) {
         JOIN akun a ON hk.nim = a.nim
         WHERE k.matkul_id = ?
         GROUP BY hk.nim, a.nama, mk.nama_matkul, mk.kelas
-        ORDER BY rata_nilai DESC, jumlah_kuis DESC, a.nama ASC
+        ORDER BY jumlah_kuis DESC, rata_nilai DESC, a.nama ASC
     ");
     $stmtBoard->bind_param("i", $filter_matkul);
     $stmtBoard->execute();
