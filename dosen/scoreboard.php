@@ -21,7 +21,11 @@ $stmtScoreboard = $conn->prepare("
         mk.kelas,
         COUNT(DISTINCT mm.nim) AS total_mahasiswa_enroll,
         COUNT(DISTINCT CASE WHEN hk.nilai IS NOT NULL THEN hk.nim END) AS mahasiswa_sudah_dinilai,
-        ROUND(AVG(hk.nilai), 1) AS rata_nilai_matkul,
+        COUNT(DISTINCT k.id) AS total_kuis_matkul,
+        ROUND(
+            COALESCE(SUM(hk.nilai), 0) / NULLIF(COUNT(DISTINCT mm.nim) * COUNT(DISTINCT k.id), 0),
+            2
+        ) AS rata_nilai_matkul,
         MAX(hk.nilai) AS nilai_tertinggi,
         MIN(hk.nilai) AS nilai_terendah
     FROM dosen_matkul dm
@@ -195,21 +199,22 @@ if ($stmtScoreboard) {
     <?php if ($scoreboardQuery && $scoreboardQuery->num_rows > 0): ?>
     <div class="sb-list">
       <?php while ($row = $scoreboardQuery->fetch_assoc()):
-        $total    = (int)$row['total_mahasiswa_enroll'];
-        $sudah    = (int)$row['mahasiswa_sudah_dinilai'];
-        $pct      = $total > 0 ? round(($sudah / $total) * 100) : 0;
-        $rata     = $row['rata_nilai_matkul'];
-        $tertinggi = $row['nilai_tertinggi'];
-        $terendah  = $row['nilai_terendah'];
+        $total      = (int)$row['total_mahasiswa_enroll'];
+        $sudah      = (int)$row['mahasiswa_sudah_dinilai'];
+        $pct        = $total > 0 ? round(($sudah / $total) * 100) : 0;
+        $rata       = $row['rata_nilai_matkul'];
+        $tertinggi  = $row['nilai_tertinggi'];
+        $terendah   = $row['nilai_terendah'];
+        $totalKuis  = (int)$row['total_kuis_matkul'];
       ?>
       <div class="sb-card">
         <div>
           <div class="sb-matkul-name"><?php echo htmlspecialchars($row['nama_matkul']); ?></div>
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
             <span class="badge badge-navy">Angkatan <?php echo $row['angkatan']; ?> Kelas <?php echo $row['kelas']; ?></span>
+            <span class="badge badge-soft"><?php echo $totalKuis; ?> kuis</span>
           </div>
 
-          <!-- Progress pengerjaan -->
           <div class="progress-wrap">
             <div class="progress-label">
               <span>Partisipasi Mahasiswa</span>
@@ -220,7 +225,6 @@ if ($stmtScoreboard) {
             </div>
           </div>
 
-          <!-- Stats -->
           <div class="sb-stats">
             <div class="sb-stat">
               <div class="sb-stat-val"><?php echo $total; ?></div>
@@ -229,7 +233,7 @@ if ($stmtScoreboard) {
             <div class="sb-stat-sep"></div>
             <div class="sb-stat">
               <div class="sb-stat-val gold"><?php echo $rata !== null ? $rata : '—'; ?></div>
-              <div class="sb-stat-lbl">Rata-rata</div>
+              <div class="sb-stat-lbl">Rata-rata Akhir</div>
             </div>
             <div class="sb-stat">
               <div class="sb-stat-val green"><?php echo $tertinggi !== null ? $tertinggi : '—'; ?></div>

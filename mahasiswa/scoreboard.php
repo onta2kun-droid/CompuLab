@@ -57,19 +57,26 @@ $scoreRows = [];
 if ($filter_matkul > 0) {
     $stmtBoard = $conn->prepare("
         SELECT 
-            hk.nim,
+            a.nim,
             a.nama,
             mk.nama_matkul,
             mk.kelas,
-            ROUND(AVG(hk.nilai), 2) AS rata_nilai,
-            COUNT(hk.id) AS jumlah_kuis
-        FROM hasil_kuis hk
-        JOIN kuis k ON hk.kuis_id = k.id
-        JOIN mata_kuliah mk ON k.matkul_id = mk.id
-        JOIN akun a ON hk.nim = a.nim
-        WHERE k.matkul_id = ?
-        GROUP BY hk.nim, a.nama, mk.nama_matkul, mk.kelas
-        ORDER BY jumlah_kuis DESC, rata_nilai DESC, a.nama ASC
+            COUNT(DISTINCT k.id) AS total_kuis_matkul,
+            COUNT(DISTINCT hk.id) AS jumlah_kuis,
+            COALESCE(SUM(hk.nilai), 0) AS total_nilai,
+            ROUND(
+                COALESCE(SUM(hk.nilai), 0) / NULLIF(COUNT(DISTINCT k.id), 0),
+                2
+            ) AS rata_nilai
+        FROM mahasiswa_matkul mm
+        JOIN akun a ON mm.nim = a.nim
+        JOIN mata_kuliah mk ON mm.matkul_id = mk.id
+        LEFT JOIN kuis k ON k.matkul_id = mk.id
+        LEFT JOIN hasil_kuis hk ON hk.kuis_id = k.id AND hk.nim = mm.nim
+        WHERE mm.matkul_id = ?
+        GROUP BY a.nim, a.nama, mk.nama_matkul, mk.kelas
+        HAVING COUNT(DISTINCT k.id) > 0
+        ORDER BY rata_nilai DESC, jumlah_kuis DESC, a.nama ASC
     ");
     $stmtBoard->bind_param("i", $filter_matkul);
     $stmtBoard->execute();
@@ -78,6 +85,8 @@ if ($filter_matkul > 0) {
     while ($row = $scoreQuery->fetch_assoc()) {
         $scoreRows[] = $row;
     }
+
+    $stmtBoard->close();
 }
 
 $top1 = $scoreRows[0] ?? null;
@@ -325,11 +334,8 @@ $others = array_slice($scoreRows, 3);
 </head>
 <body>
 
-<!-- HAMBURGER BUTTON -->
-<!-- OVERLAY -->
 <div class="mobile-overlay" id="mobileOverlay"></div>
 
-<!-- MOBILE DRAWER -->
 <div class="mobile-drawer" id="mobileDrawer">
   <div class="logo">COMPULAB</div>
   <nav>
@@ -393,7 +399,7 @@ $others = array_slice($scoreRows, 3);
 
         <div class="podium-wrap">
           <div class="podium-grid">
-            
+
             <div>
               <?php if ($top2): ?>
                 <div class="podium-card rank-2">
@@ -402,7 +408,7 @@ $others = array_slice($scoreRows, 3);
                   <div class="podium-name"><?php echo htmlspecialchars($top2['nama']); ?></div>
                   <div class="podium-nim"><?php echo htmlspecialchars($top2['nim']); ?></div>
                   <div class="podium-score"><?php echo htmlspecialchars($top2['rata_nilai']); ?></div>
-                  <div class="muted"><?php echo htmlspecialchars($top2['jumlah_kuis']); ?> kuis</div>
+                  <div class="muted"><?php echo htmlspecialchars($top2['jumlah_kuis']); ?>/<?php echo htmlspecialchars($top2['total_kuis_matkul']); ?> kuis</div>
                 </div>
               <?php endif; ?>
             </div>
@@ -415,7 +421,7 @@ $others = array_slice($scoreRows, 3);
                   <div class="podium-name"><?php echo htmlspecialchars($top1['nama']); ?></div>
                   <div class="podium-nim"><?php echo htmlspecialchars($top1['nim']); ?></div>
                   <div class="podium-score"><?php echo htmlspecialchars($top1['rata_nilai']); ?></div>
-                  <div class="muted"><?php echo htmlspecialchars($top1['jumlah_kuis']); ?> kuis</div>
+                  <div class="muted"><?php echo htmlspecialchars($top1['jumlah_kuis']); ?>/<?php echo htmlspecialchars($top1['total_kuis_matkul']); ?> kuis</div>
                 </div>
               <?php endif; ?>
             </div>
@@ -428,7 +434,7 @@ $others = array_slice($scoreRows, 3);
                   <div class="podium-name"><?php echo htmlspecialchars($top3['nama']); ?></div>
                   <div class="podium-nim"><?php echo htmlspecialchars($top3['nim']); ?></div>
                   <div class="podium-score"><?php echo htmlspecialchars($top3['rata_nilai']); ?></div>
-                  <div class="muted"><?php echo htmlspecialchars($top3['jumlah_kuis']); ?> kuis</div>
+                  <div class="muted"><?php echo htmlspecialchars($top3['jumlah_kuis']); ?>/<?php echo htmlspecialchars($top3['total_kuis_matkul']); ?> kuis</div>
                 </div>
               <?php endif; ?>
             </div>
@@ -444,8 +450,8 @@ $others = array_slice($scoreRows, 3);
                 <th style="width:90px;">Rank</th>
                 <th style="width:170px;">NIM</th>
                 <th>Nama</th>
-                <th style="width:180px;">Rata-rata Nilai</th>
-                <th style="width:150px;">Jumlah Kuis</th>
+                <th style="width:180px;">Nilai Akhir</th>
+                <th style="width:170px;">Kuis Dikerjakan</th>
               </tr>
             </thead>
             <tbody>
@@ -456,7 +462,7 @@ $others = array_slice($scoreRows, 3);
                   <td><?php echo htmlspecialchars($row['nim']); ?></td>
                   <td><?php echo htmlspecialchars($row['nama']); ?></td>
                   <td class="score-text"><?php echo htmlspecialchars($row['rata_nilai']); ?></td>
-                  <td><?php echo htmlspecialchars($row['jumlah_kuis']); ?></td>
+                  <td><?php echo htmlspecialchars($row['jumlah_kuis']); ?>/<?php echo htmlspecialchars($row['total_kuis_matkul']); ?></td>
                 </tr>
               <?php endforeach; ?>
             </tbody>
