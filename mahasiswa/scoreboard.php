@@ -299,8 +299,27 @@ $others = array_slice($scoreRows, 3);
   }
 
   @media (max-width: 900px) {
-    .podium-grid { grid-template-columns: 1fr; }
-    .rank-1, .rank-2, .rank-3 { min-height: auto; }
+    .podium-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rank-1,
+    .rank-2,
+    .rank-3 {
+      min-height: auto;
+    }
+
+    .podium-grid > div:nth-child(1) {
+      order: 2;
+    }
+
+    .podium-grid > div:nth-child(2) {
+      order: 1;
+    }
+
+    .podium-grid > div:nth-child(3) {
+      order: 3;
+    }
   }
 </style>
 </head>
