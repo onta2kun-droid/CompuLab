@@ -1,6 +1,3 @@
-/* ==========================================
-   COMPULAB ADMIN — Dark Crimson Theme
-   ========================================== */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 :root {
@@ -264,7 +261,7 @@ body {
   background: linear-gradient(90deg, var(--crimson), var(--crimson-light));
 }
 .stat-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-3); margin-bottom: 10px; }
-.stat-value { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--text-1); line-height: 1; }
+.stat-value { font-family: 'DM Sans', sans-serif; font-size: 42px; font-weight: 700; color: var(--text-1); line-height: 1.1; letter-spacing: -1px; }
 .stat-card.accent .stat-value { color: var(--crimson-light); }
 .stat-sub { font-size: 12px; color: var(--text-3); margin-top: 6px; }
 
@@ -479,16 +476,25 @@ table.admin-table {
 }
 .mobile-overlay.show { display: block; }
 
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 20px;
+  align-items: start;
+}
+
 @media (max-width: 900px) {
   .sidebar { transform: translateX(-100%); }
   .sidebar.open { transform: translateX(0); }
   .main { margin-left: 0; }
   .topbar-hamburger { display: flex; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
   .page { padding: 16px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .stat-value { font-size: 28px; }
+  .stat-value { font-size: 32px; }
+  .stat-card { padding: 14px 16px; }
 }

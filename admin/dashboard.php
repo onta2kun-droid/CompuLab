@@ -102,7 +102,9 @@ $recentQuery = $conn->query("SELECT nama, role, created_at FROM akun ORDER BY cr
       </div>
     </div>
 
-    <div style="display:grid; grid-template-columns:1fr 320px; gap:20px; align-items:start;">
+    <!-- <div style="display:grid; grid-template-columns:1fr 320px; gap:20px; align-items:start;"> -->
+    <!-- <div style="display:grid; grid-template-columns:1fr 320px; gap:20px; align-items:start; flex-wrap:wrap;"> -->
+    <div class="dashboard-grid">
 
       <!-- Recent Registrations -->
       <div class="card">
