@@ -555,7 +555,8 @@ if (isset($_GET['detail'])) {
         <a href="kelola_matkul.php" class="btn btn-ghost btn-sm">← Kembali</a>
       </div>
 
-      <div class="card" style="max-width:520px;">
+      <div style="display:flex; justify-content:center;">
+      <div class="card" style="width:100%; max-width:680px;">
         <h3 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:20px;">Tambah Mata Kuliah</h3>
 
         <form method="POST">
