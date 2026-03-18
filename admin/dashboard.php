@@ -38,7 +38,11 @@ $recentQuery = $conn->query("SELECT nama, role, created_at FROM akun ORDER BY cr
 
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <div class="sidebar-logo-mark">C</div>
+    <div class="sidebar-logo-mark">
+      <span class="sidebar-logo-mark-text">
+        <span class="cl-c">C</span><span class="cl-l">L</span>
+      </span> 
+    </div>
     <div class="sidebar-logo-text">COMPU<span>LAB</span></div>
   </div>
   <nav class="sidebar-nav">
@@ -64,11 +68,11 @@ $recentQuery = $conn->query("SELECT nama, role, created_at FROM akun ORDER BY cr
 <div class="main">
   <div class="topbar">
     <button class="topbar-hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
-    <h1>Admin Control Panel 👑</h1>
+    <h1>Admin Control Panel</h1>
     <div class="topbar-right">
-      <div class="topbar-badge">
+      <div class="topbar-badge" id="topbarBadge" onclick="this.classList.toggle('show')">
         <div class="topbar-avatar">A</div>
-        <?php echo htmlspecialchars($admin_nama); ?>
+        <span class="topbar-badge-text"><?php echo htmlspecialchars($admin_nama); ?></span>
       </div>
     </div>
   </div>
@@ -102,8 +106,6 @@ $recentQuery = $conn->query("SELECT nama, role, created_at FROM akun ORDER BY cr
       </div>
     </div>
 
-    <!-- <div style="display:grid; grid-template-columns:1fr 320px; gap:20px; align-items:start;"> -->
-    <!-- <div style="display:grid; grid-template-columns:1fr 320px; gap:20px; align-items:start; flex-wrap:wrap;"> -->
     <div class="dashboard-grid">
 
       <!-- Recent Registrations -->

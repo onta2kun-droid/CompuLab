@@ -211,7 +211,7 @@ $matkulList = $conn->query("
         mk.nama_matkul,
         mk.angkatan,
         mk.kelas,
-        GROUP_CONCAT(DISTINCT a.nama ORDER BY a.nama SEPARATOR ', ') AS nama_dosen,
+        GROUP_CONCAT(DISTINCT a.nama ORDER BY a.nama SEPARATOR '||') AS nama_dosen,
         COUNT(DISTINCT mm.nim) AS total_mhs
     FROM mata_kuliah mk
     LEFT JOIN dosen_matkul dm ON mk.id = dm.matkul_id
@@ -393,7 +393,11 @@ if (isset($_GET['detail'])) {
 
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <div class="sidebar-logo-mark">C</div>
+    <div class="sidebar-logo-mark">
+      <span class="sidebar-logo-mark-text">
+        <span class="cl-c">C</span><span class="cl-l">L</span>
+      </span>
+    </div>
     <div class="sidebar-logo-text">COMPU<span>LAB</span></div>
   </div>
 
@@ -617,13 +621,26 @@ if (isset($_GET['detail'])) {
                   <td><strong><?php echo htmlspecialchars($row['nama_matkul']); ?></strong></td>
                   <td><?php echo htmlspecialchars($row['angkatan']); ?></td>
                   <td><span class="badge badge-blue"><?php echo htmlspecialchars($row['kelas']); ?></span></td>
-                  <td style="color:var(--text-2);"><?php echo htmlspecialchars($row['nama_dosen'] ?? '-'); ?></td>
+                  
+
+                  <td>
+                    <?php 
+                      $dosens = array_filter(explode('||', $row['nama_dosen'] ?? ''));
+                      if ($dosens):
+                        foreach ($dosens as $d): ?>
+                          <div style="font-size:13px; color:var(--text-2); padding:2px 0;"><?php echo htmlspecialchars(trim($d)); ?></div>
+                        <?php endforeach;
+                      else: ?>
+                        <span style="color:var(--text-3);">-</span>
+                      <?php endif; ?>
+                  </td>
+
                   <td><span class="badge badge-gray"><?php echo (int)$row['total_mhs']; ?> mhs</span></td>
                   <td>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                      <a href="?detail=<?php echo (int)$row['id']; ?>" class="btn btn-ghost btn-sm">ℹ️ Detail</a>
-                      <a href="?detail=<?php echo (int)$row['id']; ?>" class="btn btn-ghost btn-sm">👥 Lihat Mahasiswa</a>
-                      <a href="?hapus=<?php echo (int)$row['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Hapus mata kuliah ini? Relasi dosen dan enroll mahasiswa juga akan dihapus.')">🗑️</a>
+                    <div style="display:flex; flex-direction:column; gap:6px; min-width:110px;">
+                      <a href="?detail=<?php echo (int)$row['id']; ?>" class="btn btn-ghost btn-sm" style="justify-content:flex-start;">ℹ️ Detail & Enroll</a>
+                      <a href="?hapus=<?php echo (int)$row['id']; ?>" class="btn btn-danger btn-sm" style="justify-content:flex-start;"
+                        onclick="return confirm('Hapus mata kuliah ini? Relasi dosen dan enroll mahasiswa juga akan dihapus.')">🗑️ Hapus</a>
                     </div>
                   </td>
                 </tr>

@@ -42,7 +42,11 @@ $now = time();
 <div class="mobile-overlay" id="mobileOverlay"></div>
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <div class="sidebar-logo-mark">C</div>
+    <div class="sidebar-logo-mark">
+      <span class="sidebar-logo-mark-text">
+        <span class="cl-c">C</span><span class="cl-l">L</span>
+      </span>
+    </div>
     <div class="sidebar-logo-text">COMPU<span>LAB</span></div>
   </div>
   <nav class="sidebar-nav">

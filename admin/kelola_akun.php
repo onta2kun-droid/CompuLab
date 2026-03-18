@@ -143,24 +143,44 @@ if (isset($_POST['tambah_dosen'])) {
    RESET PASSWORD
 ========================= */
 if (isset($_POST['reset_pass'])) {
-    $akun_id  = (int)($_POST['akun_id'] ?? 0);
+    $akun_id  = trim($_POST['akun_id'] ?? '');
     $new_pass = trim($_POST['new_pass'] ?? '');
 
-    if ($akun_id > 0 && $new_pass !== '') {
-        $hash = password_hash($new_pass, PASSWORD_DEFAULT);
-        $st = $conn->prepare("UPDATE akun SET password = ? WHERE id = ?");
+    if ($akun_id !== '' && $new_pass !== '') {
 
-        if ($st) {
-            $st->bind_param("si", $hash, $akun_id);
+        $hash = password_hash($new_pass, PASSWORD_DEFAULT);
+
+        // 🔥 CEK BERDASARKAN DATABASE (BUKAN ANGKA ATAU BUKAN)
+        $cek = $conn->prepare("SELECT id, nim FROM akun WHERE id = ? OR nim = ? LIMIT 1");
+        $cek->bind_param("ss", $akun_id, $akun_id);
+        $cek->execute();
+        $res = $cek->get_result();
+
+        if ($res->num_rows > 0) {
+            $user = $res->fetch_assoc();
+
+            if (!empty($user['id']) && $user['id'] == $akun_id) {
+                $st = $conn->prepare("UPDATE akun SET password = ? WHERE id = ?");
+                $st->bind_param("si", $hash, $akun_id);
+            } else {
+                $st = $conn->prepare("UPDATE akun SET password = ? WHERE nim = ?");
+                $st->bind_param("ss", $hash, $akun_id);
+            }
+
             if ($st->execute()) {
                 $success = "Password berhasil direset!";
             } else {
                 $error = "Gagal reset password.";
             }
+
             $st->close();
+
         } else {
-            $error = "Query reset password gagal.";
+            $error = "Akun tidak ditemukan.";
         }
+
+        $cek->close();
+
     } else {
         $error = "Password baru wajib diisi.";
     }
@@ -333,6 +353,8 @@ if ($stM) {
 <title>Kelola Akun | COMPULAB Admin</title>
 <link rel="stylesheet" href="../css/admin.css">
 <style>
+.tab-nav::-webkit-scrollbar { display: none; }
+
 .matkul-badge-list{
   display:flex;
   flex-wrap:wrap;
@@ -386,6 +408,65 @@ if ($stM) {
     overflow-x:auto;
   }
 }
+
+@media (max-width: 640px) {
+  /* Sembunyikan tabel header */
+  .tbl-dosen thead, .tbl-mhs thead { display: none; }
+
+  /* Setiap baris jadi card */
+  .tbl-dosen tbody tr, .tbl-mhs tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    padding: 14px 16px;
+    background: var(--bg-2);
+  }
+
+  /* Setiap cell jadi baris */
+  .tbl-dosen td, .tbl-mhs td {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 6px 0;
+    border: none;
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  /* Sembunyikan No */
+  .tbl-dosen td:nth-child(1),
+  .tbl-mhs td:nth-child(1) { display: none; }
+
+  /* Label di kiri */
+  .tbl-dosen td::before,
+  .tbl-mhs td::before {
+    content: attr(data-label);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  /* Kolom aksi full width */
+  .tbl-dosen td:last-child,
+  .tbl-mhs td:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border) !important;
+  }
+  .tbl-dosen td:last-child::before,
+  .tbl-mhs td:last-child::before { display: none; }
+  .tbl-dosen td:last-child .btn-sm,
+  .tbl-mhs td:last-child .btn-sm { width: 100%; justify-content: center; }
+}
 </style>
 </head>
 <body>
@@ -393,7 +474,11 @@ if ($stM) {
 
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
-    <div class="sidebar-logo-mark">C</div>
+    <div class="sidebar-logo-mark">
+      <span class="sidebar-logo-mark-text">
+        <span class="cl-c">C</span><span class="cl-l">L</span>
+      </span>
+    </div>
     <div class="sidebar-logo-text">COMPU<span>LAB</span></div>
   </div>
 
@@ -418,9 +503,9 @@ if ($stM) {
     <button class="topbar-hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
     <h1>Kelola Akun</h1>
     <div class="topbar-right">
-      <div class="topbar-badge">
+      <div class="topbar-badge" onclick="this.classList.toggle('show')">
         <div class="topbar-avatar">A</div>
-        <?php echo htmlspecialchars($admin_nama); ?>
+        <span class="topbar-badge-text"><?php echo htmlspecialchars($admin_nama); ?></span>
       </div>
     </div>
   </div>
@@ -435,7 +520,7 @@ if ($stM) {
     <?php endif; ?>
 
     <!-- Tabs -->
-    <div style="display:flex; gap:6px; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:0;">
+    <div class="tab-nav" style="display:flex; gap:6px; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:0; overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none;">
       <?php foreach (['dosen'=>'👨‍🏫 Dosen','mahasiswa'=>'🎓 Mahasiswa','tambah_dosen'=>'+ Tambah Dosen'] as $k => $label): ?>
         <a href="?tab=<?php echo $k; ?>"
            style="padding:10px 16px; font-size:13px; font-weight:600; text-decoration:none; border-bottom:2px solid <?php echo $tab===$k ? 'var(--crimson)' : 'transparent'; ?>; color:<?php echo $tab===$k ? 'var(--crimson-light)' : 'var(--text-2)'; ?>; margin-bottom:-1px; transition:color 0.2s;">
@@ -446,7 +531,8 @@ if ($stM) {
 
     <?php if ($tab === 'tambah_dosen'): ?>
 
-      <div class="card" style="max-width:480px;">
+    <div style="display:flex; justify-content:center;">
+      <div class="card" style="width:100%; max-width:600px;">
         <h3 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:20px;">Tambah Akun Dosen</h3>
         <form method="POST">
           <div class="form-group">
@@ -472,6 +558,7 @@ if ($stM) {
           <button type="submit" name="tambah_dosen" class="btn btn-red">👨‍🏫 Tambah Dosen</button>
         </form>
       </div>
+    </div>
 
     <?php elseif ($tab === 'dosen'): ?>
 
@@ -489,14 +576,14 @@ if ($stM) {
       </div>
 
       <div class="table-wrap">
-        <table class="admin-table">
+        <table class="admin-table tbl-dosen">
           <thead>
             <tr>
               <th>No</th>
               <th>Nama</th>
               <th>Email</th>
               <th>Mengajar</th>
-              <th>Relasi Matkul</th>
+              <th style="max-width:220px;">Relasi Matkul</th>
               <th>Terdaftar</th>
               <th>Aksi</th>
             </tr>
@@ -509,13 +596,13 @@ if ($stM) {
                 ?>
                 <tr>
                   <td style="color:var(--text-3);"><?php echo $no++; ?></td>
-                  <td><strong><?php echo htmlspecialchars($row['nama']); ?></strong></td>
-                  <td style="color:var(--text-2);"><?php echo htmlspecialchars($row['email']); ?></td>
-                  <td>
+                  <td data-label="Nama"><strong><?php echo htmlspecialchars($row['nama']); ?></strong></td>
+                  <td data-label="Email" style="color:var(--text-2);"><?php echo htmlspecialchars($row['email']); ?></td>
+                  <td data-label="Mengajar">
                     <span class="badge badge-green"><?php echo (int)$row['total_matkul']; ?> Matkul</span>
                   </td>
-                  <td>
-                    <div class="matkul-badge-list">
+                  <td data-label="Relasi Matkul" style="max-width:220px;">
+                    <div class="matkul-badge-list" style="max-width:220px;">
                       <?php if (!empty($assignedIds)): ?>
                         <?php foreach ($matkul_list as $mk): ?>
                           <?php if (in_array((int)$mk['id'], $assignedIds, true)): ?>
@@ -531,26 +618,26 @@ if ($stM) {
                       <?php endif; ?>
                     </div>
                   </td>
-                  <td style="color:var(--text-3); font-size:12px;"><?php echo date('d M Y', strtotime($row['created_at'])); ?></td>
+                  <td data-label="Terdaftar" style="color:var(--text-3); font-size:12px;"><?php echo date('d M Y', strtotime($row['created_at'])); ?></td>
                   <td>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <div style="display:flex; flex-direction:column; gap:6px; min-width:120px;">
                       <button
-                        class="btn btn-ghost btn-sm"
+                        class="btn btn-ghost btn-sm" style="justify-content:flex-start;"
                         onclick='openAturMatkul(<?php echo (int)$row["id"]; ?>, <?php echo json_encode($row["nama"]); ?>, <?php echo json_encode($assignedIds); ?>)'>
                         📚 Atur Matkul
                       </button>
 
                       <button
                         class="btn btn-ghost btn-sm"
-                        onclick="openReset(<?php echo (int)$row['id']; ?>, <?php echo json_encode($row['nama']); ?>)">
+                        onclick='openReset(<?php echo json_encode($row["id"]); ?>, <?php echo json_encode($row["nama"]); ?>)'>
                         🔑 Reset
                       </button>
 
                       <a
                         href="?tab=dosen&hapus=<?php echo (int)$row['id']; ?>&role_hapus=dosen"
-                        class="btn btn-danger btn-sm"
+                        class="btn btn-danger btn-sm" style="justify-content:flex-start;"
                         onclick="return confirm('Hapus akun <?php echo htmlspecialchars($row['nama']); ?>? Relasi dosen_matkul juga akan dihapus.')">
-                        🗑️
+                        🗑️ Hapus
                       </a>
                     </div>
                   </td>
@@ -585,7 +672,7 @@ if ($stM) {
       </div>
 
       <div class="table-wrap">
-        <table class="admin-table">
+        <table class="admin-table tbl-mhs">
           <thead>
             <tr>
               <th>NIM</th>
@@ -600,24 +687,29 @@ if ($stM) {
             <?php if ($mhs_list): ?>
               <?php foreach ($mhs_list as $row): ?>
                 <tr>
-                  <td style="font-family:'Syne',sans-serif; font-weight:600; font-size:13px;"><?php echo htmlspecialchars($row['nim']); ?></td>
-                  <td><?php echo htmlspecialchars($row['nama']); ?></td>
-                  <td style="color:var(--text-2);"><?php echo htmlspecialchars($row['email']); ?></td>
-                  <td>
+                  <td data-label="NIM" style="font-family:'Syne',sans-serif; font-weight:600; font-size:13px;"><?php echo htmlspecialchars($row['nim']); ?></td>
+                  <td data-label="Nama"><?php echo htmlspecialchars($row['nama']); ?></td>
+                  <td data-label="Email" style="color:var(--text-2);"><?php echo htmlspecialchars($row['email']); ?></td>
+                  <td data-label="Status">
                     <?php if ($row['is_verified']): ?>
                       <span class="badge badge-green">✓ Terverifikasi</span>
                     <?php else: ?>
                       <span class="badge badge-red">⏳ Belum Verif</span>
                     <?php endif; ?>
                   </td>
-                  <td style="color:var(--text-3); font-size:12px;"><?php echo date('d M Y', strtotime($row['created_at'])); ?></td>
+                  <td data-label="Terdaftar" style="color:var(--text-3); font-size:12px;"><?php echo date('d M Y', strtotime($row['created_at'])); ?></td>
                   <td>
-                    <a
-                      href="?tab=mahasiswa&hapus=<?php echo urlencode($row['nim']); ?>&role_hapus=mahasiswa"
-                      class="btn btn-danger btn-sm"
-                      onclick="return confirm('Hapus akun <?php echo htmlspecialchars($row['nama']); ?>? Data enroll dan nilai mahasiswa juga akan ikut terhapus.')">
-                      🗑️ Hapus
-                    </a>
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                      <button class="btn btn-ghost btn-sm" style="justify-content:flex-start;"
+                        onclick='openReset(<?php echo json_encode($row["nim"]); ?>, <?php echo json_encode($row["nama"]); ?>)'>
+                        🔑 Reset Pass
+                      </button>
+                      <a href="?tab=mahasiswa&hapus=<?php echo urlencode($row['nim']); ?>&role_hapus=mahasiswa"
+                        class="btn btn-danger btn-sm" style="justify-content:flex-start;"
+                        onclick="return confirm('Hapus akun <?php echo htmlspecialchars($row['nama']); ?>? Data enroll dan nilai mahasiswa juga akan ikut terhapus.')">
+                        🗑️ Hapus
+                      </a>
+                    </div>
                   </td>
                 </tr>
               <?php endforeach; ?>
@@ -725,11 +817,15 @@ function openReset(id, nama) {
   document.getElementById('resetNama').textContent = nama;
   document.getElementById('resetModal').classList.add('show');
 }
+
 function closeReset() {
   document.getElementById('resetModal').classList.remove('show');
 }
-document.getElementById('resetModal').addEventListener('click', e => {
-  if (e.target === document.getElementById('resetModal')) closeReset();
+
+document.getElementById('resetModal').addEventListener('click', function(e) {
+  if (e.target === document.getElementById('resetModal')) {
+    closeReset();
+  }
 });
 
 /* atur matkul modal */
