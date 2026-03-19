@@ -97,7 +97,7 @@ if (isset($_POST['verify'])) {
             }
             $stmtNama->close();
         }
-        $waAdmin  = "6282255304228";
+        $waAdmin  = "6282250253540";
         $pesanWA  = urlencode("Halo Admin COMPULAB\n\nSaya *$namaMhs* baru saja mendaftar akun dengan email *$email*.\n\nMohon kirimkan kode verifikasi saya. Terima kasih");
         $linkWA   = "https://wa.me/$waAdmin?text=$pesanWA";
       ?>

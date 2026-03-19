@@ -246,7 +246,7 @@ if (isset($_GET['detail'])) {
         $stmtDetail = $conn->prepare("
             SELECT 
                 mk.*,
-                GROUP_CONCAT(DISTINCT a.nama ORDER BY a.nama SEPARATOR ', ') AS nama_dosen,
+                GROUP_CONCAT(DISTINCT a.nama ORDER BY a.nama SEPARATOR '||') AS nama_dosen,
                 COUNT(DISTINCT mm.nim) AS total_mahasiswa
             FROM mata_kuliah mk
             LEFT JOIN dosen_matkul dm ON mk.id = dm.matkul_id
@@ -367,9 +367,31 @@ if (isset($_GET['detail'])) {
   border-radius:999px;
   font-size:12px;
   font-weight:600;
-  background:rgba(255,255,255,.6);
-  border:1px solid var(--border);
+  max-width:100%;
+  word-break:break-word;
+  background: var(--bg-4); 
+  border: 1px solid var(--border-2); 
+  color: var(--text-1); 
 }
+
+.info-chip:nth-child(1) { 
+  background: rgba(74,144,217,0.12); 
+  border-color: rgba(74,144,217,0.25); 
+  color: #60a5fa; 
+}
+
+.info-chip:nth-child(2) { 
+  background: rgba(245,166,35,0.12); 
+  border-color: rgba(245,166,35,0.25); 
+  color: #fbbf24; 
+}
+
+.info-chip:nth-child(n+3) { 
+  background: rgba(224,58,58,0.10); 
+  border-color: rgba(224,58,58,0.22); 
+  color: var(--crimson-light); 
+}
+
 .action-row{
   display:flex;
   justify-content:space-between;
@@ -378,6 +400,17 @@ if (isset($_GET['detail'])) {
   margin-bottom:16px;
   flex-wrap:wrap;
 }
+.dosen-list { display:flex; flex-direction:column; gap:4px; }
+.dosen-item {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:12px; color:var(--text-2);
+  padding:3px 0;
+}
+.dosen-item::before {
+  content:'👨‍🏫';
+  font-size:11px;
+  opacity:0.6;
+}
 @media (max-width: 900px){
   .detail-layout{
     display:block !important;
@@ -385,6 +418,65 @@ if (isset($_GET['detail'])) {
   .detail-side{
     margin-top:20px;
   }
+}
+
+@media (max-width: 640px) {
+  /* ── LIST MATKUL jadi card ── */
+  .tbl-matkul thead { display: none; }
+  .tbl-matkul tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    padding: 14px 16px;
+    background: var(--bg-2);
+  }
+  .tbl-matkul td {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; padding: 5px 0;
+    border: none; font-size: 13px; gap: 8px;
+  }
+  .tbl-matkul td::before {
+    content: attr(data-label);
+    font-size: 11px; font-weight: 700;
+    color: var(--text-3); text-transform: uppercase;
+    white-space: nowrap; flex-shrink: 0; padding-top: 2px;
+  }
+  .tbl-matkul td:last-child {
+    display: flex; flex-direction: column;
+    gap: 6px; margin-top: 8px;
+    padding-top: 10px; border-top: 1px solid var(--border) !important;
+  }
+  .tbl-matkul td:last-child::before { display: none; }
+  .tbl-matkul td:last-child .btn { width: 100%; justify-content: center; }
+
+  /* ── TABEL ENROLL jadi card ── */
+  .tbl-enroll thead { display: none; }
+  .tbl-enroll tbody tr {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    background: var(--bg-2);
+  }
+  .tbl-enroll td {
+    display: flex; justify-content: space-between;
+    align-items: center; padding: 4px 0;
+    border: none; font-size: 13px; gap: 8px;
+  }
+  .tbl-enroll td::before {
+    content: attr(data-label);
+    font-size: 11px; font-weight: 700;
+    color: var(--text-3); text-transform: uppercase;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .tbl-enroll td:last-child {
+    margin-top: 8px; padding-top: 10px;
+    border-top: 1px solid var(--border) !important;
+  }
+  .tbl-enroll td:last-child::before { display: none; }
+  .tbl-enroll td:last-child .btn { width: 100%; justify-content: center; }
 }
 </style>
 </head>
@@ -422,9 +514,9 @@ if (isset($_GET['detail'])) {
     <button class="topbar-hamburger" id="hamburgerBtn"><span></span><span></span><span></span></button>
     <h1>Mata Kuliah & Enroll</h1>
     <div class="topbar-right">
-      <div class="topbar-badge">
+      <div class="topbar-badge" onclick="this.classList.toggle('show')">
         <div class="topbar-avatar">A</div>
-        <?php echo htmlspecialchars($admin_nama); ?>
+        <span class="topbar-badge-text"><?php echo htmlspecialchars($admin_nama); ?></span>
       </div>
     </div>
   </div>
@@ -453,7 +545,11 @@ if (isset($_GET['detail'])) {
         <div class="info-meta">
           <span class="info-chip">🎓 Angkatan <?php echo htmlspecialchars($detailMatkul['angkatan']); ?></span>
           <span class="info-chip">🏷️ Kelas <?php echo htmlspecialchars($detailMatkul['kelas']); ?></span>
-          <span class="info-chip">👨‍🏫 <?php echo htmlspecialchars($detailMatkul['nama_dosen'] ?: '-'); ?></span>
+          <?php 
+            $dosenArr = array_filter(explode('||', $detailMatkul['nama_dosen'] ?? ''));
+            foreach ($dosenArr as $d): ?>
+            <span class="info-chip">👨‍🏫 <?php echo htmlspecialchars(trim($d)); ?></span>
+          <?php endforeach; ?>
         </div>
       </div>
 
@@ -484,12 +580,11 @@ if (isset($_GET['detail'])) {
           </div>
 
           <div class="table-wrap">
-            <table class="admin-table">
+            <table class="admin-table tbl-enroll">
               <thead>
                 <tr>
                   <th>NIM</th>
                   <th>Nama</th>
-                  <th>Email</th>
                   <th>Status</th>
                   <th>Aksi</th>
                 </tr>
@@ -498,10 +593,9 @@ if (isset($_GET['detail'])) {
                 <?php if ($enrollList && $enrollList->num_rows > 0): ?>
                   <?php while ($r = $enrollList->fetch_assoc()): ?>
                     <tr>
-                      <td style="font-family:'Syne',sans-serif; font-weight:600;"><?php echo htmlspecialchars($r['nim']); ?></td>
-                      <td><?php echo htmlspecialchars($r['nama']); ?></td>
-                      <td style="color:var(--text-2);"><?php echo htmlspecialchars($r['email']); ?></td>
-                      <td>
+                      <td data-label="NIM" style="font-family:'Syne',sans-serif; font-weight:600;"><?php echo htmlspecialchars($r['nim']); ?></td>
+                      <td data-label="Nama"><?php echo htmlspecialchars($r['nama']); ?></td>
+                      <td data-label="Status">
                         <?php if ((int)$r['is_verified'] === 1): ?>
                           <span class="badge badge-green">✓ Terverifikasi</span>
                         <?php else: ?>
@@ -510,7 +604,7 @@ if (isset($_GET['detail'])) {
                       </td>
                       <td>
                         <a href="?detail=<?php echo (int)$detailMatkul['id']; ?>&hapus_enroll=<?php echo urlencode($r['nim']); ?>&mid=<?php echo (int)$detailMatkul['id']; ?>"
-                           class="btn btn-danger btn-sm"
+                           class="btn btn-danger btn-sm" style="white-space:nowrap;"
                            onclick="return confirm('Hapus mahasiswa ini dari mata kuliah?')">
                           🗑️ Hapus
                         </a>
@@ -519,7 +613,7 @@ if (isset($_GET['detail'])) {
                   <?php endwhile; ?>
                 <?php else: ?>
                   <tr>
-                    <td colspan="5">
+                    <td colspan="4">
                       <div class="empty-state">
                         <div class="icon">🎓</div>
                         <p>Belum ada mahasiswa terdaftar.</p>
@@ -556,41 +650,42 @@ if (isset($_GET['detail'])) {
       </div>
 
       <div style="display:flex; justify-content:center;">
-      <div class="card" style="width:100%; max-width:680px;">
-        <h3 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:20px;">Tambah Mata Kuliah</h3>
+        <div class="card" style="width:100%; max-width:680px;">
+          <h3 style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; margin-bottom:20px;">Tambah Mata Kuliah</h3>
 
-        <form method="POST">
-          <div class="form-group">
-            <label>Nama Mata Kuliah</label>
-            <input type="text" name="nama_matkul" required placeholder="Contoh: Algoritma dan Pemrograman">
-          </div>
-
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <form method="POST">
             <div class="form-group">
-              <label>Angkatan</label>
-              <input type="text" name="angkatan" required placeholder="2025">
+              <label>Nama Mata Kuliah</label>
+              <input type="text" name="nama_matkul" required placeholder="Contoh: Algoritma dan Pemrograman">
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div class="form-group">
+                <label>Angkatan</label>
+                <input type="text" name="angkatan" required placeholder="2025">
+              </div>
+
+              <div class="form-group">
+                <label>Kelas</label>
+                <input type="text" name="kelas" required placeholder="A">
+              </div>
             </div>
 
             <div class="form-group">
-              <label>Kelas</label>
-              <input type="text" name="kelas" required placeholder="A">
+              <label>Dosen Pengampu</label>
+              <select name="dosen_id" required>
+                <option value="">-- Pilih Dosen --</option>
+                <?php if ($dosenList): ?>
+                  <?php while ($d = $dosenList->fetch_assoc()): ?>
+                    <option value="<?php echo (int)$d['id']; ?>"><?php echo htmlspecialchars($d['nama']); ?></option>
+                  <?php endwhile; ?>
+                <?php endif; ?>
+              </select>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label>Dosen Pengampu</label>
-            <select name="dosen_id" required>
-              <option value="">-- Pilih Dosen --</option>
-              <?php if ($dosenList): ?>
-                <?php while ($d = $dosenList->fetch_assoc()): ?>
-                  <option value="<?php echo (int)$d['id']; ?>"><?php echo htmlspecialchars($d['nama']); ?></option>
-                <?php endwhile; ?>
-              <?php endif; ?>
-            </select>
-          </div>
-
-          <button type="submit" name="tambah_matkul" class="btn btn-red">📚 Simpan Mata Kuliah</button>
-        </form>
+            <button type="submit" name="tambah_matkul" class="btn btn-red">📚 Simpan Mata Kuliah</button>
+          </form>
+        </div>
       </div>
 
     <?php else: ?>
@@ -604,7 +699,7 @@ if (isset($_GET['detail'])) {
       </div>
 
       <div class="table-wrap">
-        <table class="admin-table">
+        <table class="admin-table tbl-matkul">
           <thead>
             <tr>
               <th>Mata Kuliah</th>
@@ -619,12 +714,10 @@ if (isset($_GET['detail'])) {
             <?php if ($matkulList && $matkulList->num_rows > 0): ?>
               <?php while ($row = $matkulList->fetch_assoc()): ?>
                 <tr>
-                  <td><strong><?php echo htmlspecialchars($row['nama_matkul']); ?></strong></td>
-                  <td><?php echo htmlspecialchars($row['angkatan']); ?></td>
-                  <td><span class="badge badge-blue"><?php echo htmlspecialchars($row['kelas']); ?></span></td>
-                  
-
-                  <td>
+                  <td data-label="Mata Kuliah"><strong><?php echo htmlspecialchars($row['nama_matkul']); ?></strong></td>
+                  <td data-label="Angkatan"><?php echo htmlspecialchars($row['angkatan']); ?></td>
+                  <td data-label="Kelas"><span class="badge badge-blue"><?php echo htmlspecialchars($row['kelas']); ?></span></td>
+                  <td data-label="Dosen">
                     <?php 
                       $dosens = array_filter(explode('||', $row['nama_dosen'] ?? ''));
                       if ($dosens):
@@ -636,7 +729,7 @@ if (isset($_GET['detail'])) {
                       <?php endif; ?>
                   </td>
 
-                  <td><span class="badge badge-gray"><?php echo (int)$row['total_mhs']; ?> mhs</span></td>
+                  <td data-label="Mahasiswa"><span class="badge badge-gray"><?php echo (int)$row['total_mhs']; ?> mhs</span></td>
                   <td>
                     <div style="display:flex; flex-direction:column; gap:6px; min-width:110px;">
                       <a href="?detail=<?php echo (int)$row['id']; ?>" class="btn btn-ghost btn-sm" style="justify-content:flex-start;">ℹ️ Detail & Enroll</a>
